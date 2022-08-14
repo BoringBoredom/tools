@@ -8,6 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 import { useState } from "react";
 
@@ -35,6 +37,14 @@ const sensitivities = [
    [3.5, "3.5", "11/11"]
 ];
 
+function checkScaling(cleanScaling, multiplier) {
+   if (!cleanScaling) {
+      return true;
+   }
+
+   return 1 / multiplier % 2 === 0 || multiplier === 1;
+}
+
 function DisplayDpi(props) {
    const dpi = props.efDpi / props.multiplier;
 
@@ -53,6 +63,7 @@ function DisplayDpi(props) {
 
 export default function WinSens() {
    const [efDpi, setEfDpi] = useState(1600);
+   const [cleanScaling, setCleanScaling] = useState(true);
 
    function handleEfDpiChange(ev) {
       let input = ev.target.value;
@@ -86,6 +97,17 @@ export default function WinSens() {
             </Tooltip>
          </div>
          <div className="row">
+            <FormControlLabel
+               control={
+                  <Switch
+                     checked={cleanScaling}
+                     onChange={() => { setCleanScaling(!cleanScaling) }}
+                  />
+               }
+               label="Clean Scaling"
+            />
+         </div>
+         <div className="row">
             <TableContainer component={Paper}>
                <Table size="small">
                   <TableHead>
@@ -110,6 +132,7 @@ export default function WinSens() {
                   </TableHead>
                   <TableBody>
                      {sensitivities.map((row, index) => (
+                        checkScaling(cleanScaling, row[0]) &&
                         <TableRow
                            key={index}
                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
