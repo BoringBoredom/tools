@@ -10,11 +10,8 @@ import RLA from "./pages/RLA";
 
 import { Routes, Route } from "react-router-dom";
 
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
-import { useMemo } from "react";
 
 
 const pages = [
@@ -32,13 +29,11 @@ const pageComponents = [
 ]
 
 export default function App() {
-   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-
-   const theme = useMemo(() => createTheme({
+   const theme = createTheme({
       palette: {
-         mode: prefersDarkMode ? "dark" : "light"
+         mode: 'dark'
       }
-   }), [prefersDarkMode]);
+   });
 
    return (
       <ThemeProvider theme={theme}>
