@@ -7,13 +7,12 @@ import Grid from "@mui/material/Grid";
 
 import { useState } from "react";
 
-
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
    ...theme.typography.body2,
    padding: theme.spacing(1),
    textAlign: "center",
-   color: theme.palette.text.secondary,
+   color: theme.palette.text.secondary
 }));
 
 function DisplayCaps(props) {
@@ -74,14 +73,8 @@ function DisplayCaps(props) {
       <Box sx={{ flexGrow: 1 }}>
          <Grid container spacing={1}>
             {sortedFpsCaps.map((fps) => (
-               <Grid
-                  key={fps}
-                  item
-                  xs={2}
-               >
-                  <Item>
-                     {fps}
-                  </Item>
+               <Grid key={fps} item xs={2}>
+                  <Item>{fps}</Item>
                </Grid>
             ))}
          </Grid>
@@ -94,10 +87,7 @@ export default function FPSCap() {
    const [fpsLimit, setFpsLimit] = useState(1000);
 
    return (
-      <Container
-         className="container"
-         maxWidth="xs"
-      >
+      <Container className="container" maxWidth="xs">
          <div>
             <TextField
                id="refresh-rate"
@@ -119,10 +109,7 @@ export default function FPSCap() {
             />
          </div>
          <div className="row">
-            <DisplayCaps
-               refreshRate={refreshRate}
-               fpsLimit={fpsLimit}
-            />
+            <DisplayCaps refreshRate={refreshRate} fpsLimit={fpsLimit} />
          </div>
       </Container>
    );

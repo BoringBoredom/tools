@@ -13,7 +13,6 @@ import Switch from "@mui/material/Switch";
 
 import { useState } from "react";
 
-
 const sensitivities = [
    [1 / 32, "1/32", "1/11"],
    [1 / 16, "1/16", "2/11"],
@@ -42,7 +41,7 @@ function checkScaling(cleanScaling, multiplier) {
       return true;
    }
 
-   return 1 / multiplier % 2 === 0 || multiplier === 1;
+   return (1 / multiplier) % 2 === 0 || multiplier === 1;
 }
 
 function DisplayDpi(props) {
@@ -54,9 +53,7 @@ function DisplayDpi(props) {
 
    return (
       <Tooltip title={<h2>rounded to the nearest integer</h2>}>
-         <div>
-            *{Math.round(dpi)}
-         </div>
+         <div>*{Math.round(dpi)}</div>
       </Tooltip>
    );
 }
@@ -80,12 +77,16 @@ export default function WinSens() {
    }
 
    return (
-      <Container
-         className="container"
-         maxWidth="xs"
-      >
+      <Container className="container" maxWidth="xs">
          <div>
-            <Tooltip title={<h2>DPI you'd normally use @ stock setting (New Panel: 10/20 or Legacy Panel: 6/11)</h2>}>
+            <Tooltip
+               title={
+                  <h2>
+                     DPI you'd normally use @ stock setting (New Panel: 10/20 or
+                     Legacy Panel: 6/11)
+                  </h2>
+               }
+            >
                <TextField
                   id="efDpi"
                   label="*eDPI (DPI @ stock)"
@@ -101,7 +102,9 @@ export default function WinSens() {
                control={
                   <Switch
                      checked={cleanScaling}
-                     onChange={() => { setCleanScaling(!cleanScaling) }}
+                     onChange={() => {
+                        setCleanScaling(!cleanScaling);
+                     }}
                   />
                }
                label="Clean Scaling"
@@ -112,45 +115,51 @@ export default function WinSens() {
                <Table size="small">
                   <TableHead>
                      <TableRow>
+                        <TableCell align="right">DPI</TableCell>
                         <TableCell align="right">
-                           DPI
-                        </TableCell>
-                        <TableCell align="right">
-                           <Tooltip title={<h2>HKEY_CURRENT_USER\Control Panel\Mouse -{">"} MouseSensitivity</h2>}>
-                              <div>
-                                 *Registry / New Panel
-                              </div>
+                           <Tooltip
+                              title={
+                                 <h2>
+                                    HKEY_CURRENT_USER\Control Panel\Mouse -{">"}{" "}
+                                    MouseSensitivity
+                                 </h2>
+                              }
+                           >
+                              <div>*Registry / New Panel</div>
                            </Tooltip>
                         </TableCell>
-                        <TableCell align="right">
-                           Legacy Panel
-                        </TableCell>
-                        <TableCell align="right">
-                           Multiplier
-                        </TableCell>
+                        <TableCell align="right">Legacy Panel</TableCell>
+                        <TableCell align="right">Multiplier</TableCell>
                      </TableRow>
                   </TableHead>
                   <TableBody>
-                     {sensitivities.map((row, index) => (
-                        checkScaling(cleanScaling, row[0]) &&
-                        <TableRow
-                           key={index}
-                           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                        >
-                           <TableCell align="right">
-                              <DisplayDpi efDpi={efDpi} multiplier={row[0]} />
-                           </TableCell>
-                           <TableCell align="right">
-                              {index + 1}
-                           </TableCell>
-                           <TableCell align="right">
-                              {row[2] === undefined ? "-" : row[2]}
-                           </TableCell>
-                           <TableCell align="right">
-                              {row[1]}
-                           </TableCell>
-                        </TableRow>
-                     ))}
+                     {sensitivities.map(
+                        (row, index) =>
+                           checkScaling(cleanScaling, row[0]) && (
+                              <TableRow
+                                 key={index}
+                                 sx={{
+                                    "&:last-child td, &:last-child th": {
+                                       border: 0
+                                    }
+                                 }}
+                              >
+                                 <TableCell align="right">
+                                    <DisplayDpi
+                                       efDpi={efDpi}
+                                       multiplier={row[0]}
+                                    />
+                                 </TableCell>
+                                 <TableCell align="right">
+                                    {index + 1}
+                                 </TableCell>
+                                 <TableCell align="right">
+                                    {row[2] === undefined ? "-" : row[2]}
+                                 </TableCell>
+                                 <TableCell align="right">{row[1]}</TableCell>
+                              </TableRow>
+                           )
+                     )}
                   </TableBody>
                </Table>
             </TableContainer>

@@ -4,7 +4,6 @@ import Switch from "@mui/material/Switch";
 
 import { useState } from "react";
 
-
 function calculateQuantum(decimal, consumerChecked) {
    if (decimal === "") {
       return "";
@@ -20,30 +19,20 @@ function calculateQuantum(decimal, consumerChecked) {
    const thirdTwo = clippedBinary.slice(4);
 
    if (
-      firstTwo === "01" || (
-         !consumerChecked && (
-            firstTwo === "00" ||
-            firstTwo === "11"
-         )
-      )
+      firstTwo === "01" ||
+      (!consumerChecked && (firstTwo === "00" || firstTwo === "11"))
    ) {
       foreGround = backGround = 12;
    }
 
    if (
-      secondTwo === "10" || (
-         !consumerChecked && (
-            secondTwo === "00" ||
-            secondTwo === "11"
-         )
-      )
+      secondTwo === "10" ||
+      (!consumerChecked && (secondTwo === "00" || secondTwo === "11"))
    ) {
       foreGround = backGround = foreGround * 3;
-   }
-   else if (thirdTwo === "01") {
+   } else if (thirdTwo === "01") {
       foreGround *= 2;
-   }
-   else if (thirdTwo === "10" || thirdTwo === "11") {
+   } else if (thirdTwo === "10" || thirdTwo === "11") {
       foreGround *= 3;
    }
 
@@ -99,10 +88,7 @@ export default function Win32PS() {
    }
 
    return (
-      <Container
-         className="container"
-         maxWidth="xs"
-      >
+      <Container className="container" maxWidth="xs">
          <div>
             <TextField
                id="decimal"
@@ -138,14 +124,13 @@ export default function Win32PS() {
             Server
             <Switch
                checked={consumerChecked}
-               onChange={() => { setConsumerChecked(!consumerChecked) }}
+               onChange={() => {
+                  setConsumerChecked(!consumerChecked);
+               }}
             />
             Consumer
          </div>
-         <div
-            className="row"
-            style={{ fontSize: "xxx-large" }}
-         >
+         <div className="row" style={{ fontSize: "xxx-large" }}>
             {calculateQuantum(decimal, consumerChecked)}
          </div>
       </Container>

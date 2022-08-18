@@ -8,11 +8,10 @@ import { Link } from "react-router-dom";
 
 export default function Home(props) {
    return (
-      <Container
-         className="container"
-         maxWidth="xs"
-      >
-         <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+      <Container className="container" maxWidth="xs">
+         <Box
+            sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+         >
             <nav>
                <List>
                   {props.pages.map((page) => (
@@ -32,5 +31,5 @@ export default function Home(props) {
             </nav>
          </Box>
       </Container>
-   )
+   );
 }

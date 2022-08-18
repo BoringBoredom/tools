@@ -11,12 +11,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import { Link } from "react-router-dom";
 
-
 export default function Nav(props) {
    const [state, setState] = useState(false);
 
    const toggleDrawer = (open) => (event) => {
-      if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+      if (
+         event.type === "keydown" &&
+         (event.key === "Tab" || event.key === "Shift")
+      ) {
          return;
       }
 
@@ -32,11 +34,7 @@ export default function Nav(props) {
          >
             <MenuIcon fontSize="large" />
          </IconButton>
-         <Drawer
-            anchor="left"
-            open={state}
-            onClose={toggleDrawer(false)}
-         >
+         <Drawer anchor="left" open={state} onClose={toggleDrawer(false)}>
             <Box
                sx={{ width: 220 }}
                role="presentation"

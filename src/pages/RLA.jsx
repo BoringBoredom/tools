@@ -5,9 +5,25 @@ import { useRef, useState } from "react";
 
 import { Line } from "react-chartjs-2";
 //import 'chart.js/auto';
-import { Chart as ChartJS, defaults, CategoryScale, LinearScale, PointElement, LineElement, Legend, Tooltip } from "chart.js";
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Legend, Tooltip);
+import {
+   Chart as ChartJS,
+   defaults,
+   CategoryScale,
+   LinearScale,
+   PointElement,
+   LineElement,
+   Legend,
+   Tooltip
+} from "chart.js";
 
+ChartJS.register(
+   CategoryScale,
+   LinearScale,
+   PointElement,
+   LineElement,
+   Legend,
+   Tooltip
+);
 
 defaults.animation = false;
 defaults.events = [];
@@ -54,7 +70,7 @@ const colorList = [
    "rgb(0,128,0)",
    "rgb(128,0,128)",
    "rgb(0,128,128)",
-   "rgb(0,0,128)",
+   "rgb(0,0,128)"
 ];
 
 const options = {
@@ -86,14 +102,17 @@ function processData(file, fileName, fileIndex) {
    const latencies = [];
    let total = 0;
 
-   file.split("\n").slice(1).forEach(line => {
-      const latency = parseFloat(line.split(",")[1]);
+   file
+      .split("\n")
+      .slice(1)
+      .forEach((line) => {
+         const latency = parseFloat(line.split(",")[1]);
 
-      if (!isNaN(latency)) {
-         latencies.push(latency);
-         total += latency;
-      }
-   });
+         if (!isNaN(latency)) {
+            latencies.push(latency);
+            total += latency;
+         }
+      });
 
    const sortedLatencies = [...latencies].sort((a, b) => a - b);
    const samples = sortedLatencies.length;
@@ -103,15 +122,21 @@ function processData(file, fileName, fileIndex) {
       file_index: fileIndex,
       file_name: fileName,
       samples: samples,
-      "STDEV": Math.sqrt(latencies.reduce((previous, current) => previous + (current - avg) ** 2, 0) / (samples - 1)),
-      "Min": sortedLatencies[0],
-      "Avg": avg,
-      "Max": sortedLatencies[samples - 1]
+      STDEV: Math.sqrt(
+         latencies.reduce(
+            (previous, current) => previous + (current - avg) ** 2,
+            0
+         ) /
+            (samples - 1)
+      ),
+      Min: sortedLatencies[0],
+      Avg: avg,
+      Max: sortedLatencies[samples - 1]
    };
 
-   values.forEach(value => {
+   values.forEach((value) => {
       if (!isNaN(value)) {
-         bench[value] = sortedLatencies[Math.ceil(value / 100 * samples) - 1];
+         bench[value] = sortedLatencies[Math.ceil((value / 100) * samples) - 1];
       }
    });
 
@@ -131,18 +156,26 @@ export default function RLA() {
             break;
          }
 
-         benches.current.push(processData(await file.text(), file.name.slice(0, -4), ++fileIndex.current));
+         benches.current.push(
+            processData(
+               await file.text(),
+               file.name.slice(0, -4),
+               ++fileIndex.current
+            )
+         );
       }
 
-      setDataSets(benches.current.map(bench => {
-         return {
-            id: bench.file_index,
-            label: bench.file_name + ` | ${bench.samples} samples`,
-            data: values.map(value => bench[value]),
-            backgroundColor: colorList[bench.file_index],
-            borderColor: colorList[bench.file_index]
-         };
-      }));
+      setDataSets(
+         benches.current.map((bench) => {
+            return {
+               id: bench.file_index,
+               label: bench.file_name + ` | ${bench.samples} samples`,
+               data: values.map((value) => bench[value]),
+               backgroundColor: colorList[bench.file_index],
+               borderColor: colorList[bench.file_index]
+            };
+         })
+      );
 
       filePicker.current.value = "";
    }
@@ -165,13 +198,13 @@ export default function RLA() {
             <FileUploadIcon fontSize="large" />
          </IconButton>
          <div>
-            {benches.current.length > 0 &&
+            {benches.current.length > 0 && (
                <Line
                   datasetIdKey="id"
                   options={options}
                   data={{ labels: values, datasets: dataSets }}
                />
-            }
+            )}
          </div>
       </>
    );
