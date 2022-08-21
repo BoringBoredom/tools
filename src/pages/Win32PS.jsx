@@ -1,4 +1,5 @@
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
 
@@ -89,7 +90,7 @@ export default function Win32PS() {
 
    return (
       <Container className="container" maxWidth="xs">
-         <div>
+         <Stack spacing={2}>
             <TextField
                id="decimal"
                label="Decimal"
@@ -99,8 +100,6 @@ export default function Win32PS() {
                fullWidth={true}
                onChange={handleDecChange}
             />
-         </div>
-         <div className="row">
             <TextField
                id="hexadecimal"
                label="Hexadecimal"
@@ -109,8 +108,6 @@ export default function Win32PS() {
                fullWidth={true}
                onChange={handleHexChange}
             />
-         </div>
-         <div className="row">
             <TextField
                id="binary"
                label="Binary"
@@ -119,20 +116,18 @@ export default function Win32PS() {
                fullWidth={true}
                onChange={handleBinaryChange}
             />
-         </div>
-         <div className="row">
-            Server
-            <Switch
-               checked={consumerChecked}
-               onChange={() => {
-                  setConsumerChecked(!consumerChecked);
-               }}
-            />
-            Consumer
-         </div>
-         <div className="row" style={{ fontSize: "xxx-large" }}>
-            {calculateQuantum(decimal, consumerChecked)}
-         </div>
+            <div>
+               Server
+               <Switch
+                  checked={consumerChecked}
+                  onChange={() => setConsumerChecked(!consumerChecked)}
+               />
+               Consumer
+            </div>
+            <div style={{ fontSize: "xxx-large" }}>
+               {calculateQuantum(decimal, consumerChecked)}
+            </div>
+         </Stack>
       </Container>
    );
 }

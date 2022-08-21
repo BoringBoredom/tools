@@ -102,17 +102,14 @@ function processData(file, fileName, fileIndex) {
    const latencies = [];
    let total = 0;
 
-   file
-      .split("\n")
-      .slice(1)
-      .forEach((line) => {
-         const latency = parseFloat(line.split(",")[1]);
+   for (const line of file.split("\n").slice(1)) {
+      const latency = parseFloat(line.split(",")[1]);
 
-         if (!isNaN(latency)) {
-            latencies.push(latency);
-            total += latency;
-         }
-      });
+      if (!isNaN(latency)) {
+         latencies.push(latency);
+         total += latency;
+      }
+   }
 
    const sortedLatencies = [...latencies].sort((a, b) => a - b);
    const samples = sortedLatencies.length;
@@ -134,11 +131,11 @@ function processData(file, fileName, fileIndex) {
       Max: sortedLatencies[samples - 1]
    };
 
-   values.forEach((value) => {
+   for (const value of values) {
       if (!isNaN(value)) {
          bench[value] = sortedLatencies[Math.ceil((value / 100) * samples) - 1];
       }
-   });
+   }
 
    return bench;
 }
@@ -148,7 +145,7 @@ export default function RLA() {
    const fileIndex = useRef(-1);
    const filePicker = useRef();
 
-   const [dataSets, setDataSets] = useState([]);
+   const [dataSets, setDataSets] = useState();
 
    async function handleFileChange(ev) {
       for (const file of ev.target.files) {
@@ -190,7 +187,7 @@ export default function RLA() {
             <input
                ref={filePicker}
                type="file"
-               accept="text/csv"
+               accept=".csv"
                multiple
                hidden
                onChange={handleFileChange}

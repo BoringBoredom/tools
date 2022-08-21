@@ -1,4 +1,5 @@
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -88,29 +89,23 @@ export default function FPSCap() {
 
    return (
       <Container className="container" maxWidth="xs">
-         <div>
+         <Stack spacing={2}>
             <TextField
-               id="refresh-rate"
                label="Monitor Refresh Rate"
                variant="outlined"
                type="number"
                value={refreshRate}
                onChange={(ev) => setRefreshRate(ev.target.value)}
             />
-         </div>
-         <div className="row">
             <TextField
-               id="fps-limit"
                label="FPS Limit"
                variant="outlined"
                type="number"
                value={fpsLimit}
                onChange={(ev) => setFpsLimit(ev.target.value)}
             />
-         </div>
-         <div className="row">
             <DisplayCaps refreshRate={refreshRate} fpsLimit={fpsLimit} />
-         </div>
+         </Stack>
       </Container>
    );
 }

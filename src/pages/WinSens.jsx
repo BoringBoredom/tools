@@ -1,4 +1,5 @@
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -78,7 +79,7 @@ export default function WinSens() {
 
    return (
       <Container className="container" maxWidth="xs">
-         <div>
+         <Stack spacing={2}>
             <Tooltip
                title={
                   <h2>
@@ -96,21 +97,17 @@ export default function WinSens() {
                   onChange={handleEfDpiChange}
                />
             </Tooltip>
-         </div>
-         <div className="row">
-            <FormControlLabel
-               control={
-                  <Switch
-                     checked={cleanScaling}
-                     onChange={() => {
-                        setCleanScaling(!cleanScaling);
-                     }}
-                  />
-               }
-               label="Clean Scaling"
-            />
-         </div>
-         <div className="row">
+            <div>
+               <FormControlLabel
+                  control={
+                     <Switch
+                        checked={cleanScaling}
+                        onChange={() => setCleanScaling(!cleanScaling)}
+                     />
+                  }
+                  label="Clean Scaling"
+               />
+            </div>
             <TableContainer component={Paper}>
                <Table size="small">
                   <TableHead>
@@ -137,7 +134,7 @@ export default function WinSens() {
                         (row, index) =>
                            checkScaling(cleanScaling, row[0]) && (
                               <TableRow
-                                 key={index}
+                                 key={row[1]}
                                  sx={{
                                     "&:last-child td, &:last-child th": {
                                        border: 0
@@ -163,7 +160,7 @@ export default function WinSens() {
                   </TableBody>
                </Table>
             </TableContainer>
-         </div>
+         </Stack>
       </Container>
    );
 }

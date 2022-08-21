@@ -7,6 +7,7 @@ import Win32PS from "./pages/Win32PS";
 import WinSens from "./pages/WinSens";
 import FPSCap from "./pages/FPSCap";
 import RLA from "./pages/RLA";
+import PowerSettings from "./pages/PowerSettings";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -17,10 +18,17 @@ const pages = [
    ["Win32PS", "Win32PrioritySeparation Calculator"],
    ["WinSens", "Windows Sensitivity Calculator"],
    ["FPSCap", "FPS Cap Calculator"],
-   ["RLA", "Reflex Latency Analyzer Grapher"]
+   ["RLA", "Reflex Latency Analyzer Grapher"],
+   ["PowerSettings", "Power Settings Editor"]
 ];
 
-const pageComponents = [<Win32PS />, <WinSens />, <FPSCap />, <RLA />];
+const pageComponents = [
+   <Win32PS />,
+   <WinSens />,
+   <FPSCap />,
+   <RLA />,
+   <PowerSettings />
+];
 
 export default function App() {
    const theme = createTheme({
