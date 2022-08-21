@@ -133,19 +133,17 @@ function saveFile(data) {
 
    let batch =
       `powercfg /duplicatescheme scheme_current ${powerSchemeGuid}\n` +
-      `powercfg /changename ${powerSchemeGuid} "${data.powerScheme.name}"\n\n`;
+      `powercfg /changename ${powerSchemeGuid} "${data.powerScheme.name}"\n` +
+      `powercfg /setactive ${powerSchemeGuid}\n\n`;
 
    for (const setting of data.settings) {
       batch +=
          `@echo ${setting.name} (${setting.subgroup.name})\n` +
-         `powercfg /setacvalueindex ${powerSchemeGuid} ${setting.subgroup.guid} ${setting.guid} ${setting.ac}\n` +
-         `powercfg /setdcvalueindex ${powerSchemeGuid} ${setting.subgroup.guid} ${setting.guid} ${setting.dc}\n\n`;
+         `powercfg /setacvalueindex scheme_current ${setting.subgroup.guid} ${setting.guid} ${setting.ac}\n` +
+         `powercfg /setdcvalueindex scheme_current ${setting.subgroup.guid} ${setting.guid} ${setting.dc}\n\n`;
    }
 
-   saveAs(
-      new Blob([batch], { type: "text/plain;charset=utf-8" }),
-      `${data.powerScheme.name}.bat`
-   );
+   saveAs(new Blob([batch]), `${data.powerScheme.name}.bat`);
 }
 
 export default function PowerSettings() {
