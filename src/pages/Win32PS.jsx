@@ -53,9 +53,13 @@ export default function Win32PS() {
 
       input = parseInt(input);
 
-      if (input >= 0 && input <= 4294967295) {
-         setDecimal(input);
+      if (input < 0) {
+         input = 0;
+      } else if (input > 4294967295) {
+         input = 4294967295;
       }
+
+      setDecimal(input);
    }
 
    function handleHexChange(ev) {
