@@ -15,6 +15,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 import { useRef, useState } from "react";
 
@@ -320,7 +321,7 @@ export default function PowerSettings() {
                   <Table>
                      <TableHead>
                         <TableRow>
-                           <TableCell align="center" colSpan={4}>
+                           <TableCell align="center" colSpan={5}>
                               <Tooltip
                                  title={
                                     <h2>{data.current.powerScheme.guid}</h2>
@@ -335,6 +336,7 @@ export default function PowerSettings() {
                            <TableCell>Setting</TableCell>
                            <TableCell>Value</TableCell>
                            <TableCell>Possible Values</TableCell>
+                           <TableCell>Copy Command</TableCell>
                         </TableRow>
                      </TableHead>
                      <TableBody>
@@ -377,6 +379,19 @@ export default function PowerSettings() {
                               <TableCell>
                                  <PossibleValues setting={setting} />
                               </TableCell>
+                              <TableCell>
+                                 <IconButton
+                                    onClick={() =>
+                                       navigator.clipboard.writeText(
+                                          `powercfg /setacvalueindex ${data.current.powerScheme.guid} ${setting.subgroup.guid} ${setting.guid} ${setting.ac}` +
+                                             "\n" +
+                                             `powercfg /setdcvalueindex ${data.current.powerScheme.guid} ${setting.subgroup.guid} ${setting.guid} ${setting.dc}`
+                                       )
+                                    }
+                                 >
+                                    <ContentCopyIcon fontSize="small" />
+                                 </IconButton>
+                              </TableCell>
                            </TableRow>
                         ))}
                      </TableBody>
@@ -386,7 +401,18 @@ export default function PowerSettings() {
          ) : (
             <>
                <h2>Open CMD as Admin</h2>
-               <h2>powercfg /QH {">"} C:\powersettings.txt</h2>
+               <h2
+                  onClick={() =>
+                     navigator.clipboard.writeText(
+                        "powercfg /QH > C:\\powersettings.txt"
+                     )
+                  }
+               >
+                  <IconButton style={{ marginRight: "5px" }}>
+                     <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                  powercfg /QH {">"} C:\powersettings.txt
+               </h2>
                <h2>Upload powersettings.txt</h2>
             </>
          )}
