@@ -149,7 +149,6 @@ function saveFile(data) {
 
 export default function PowerSettings() {
    const data = useRef();
-   const filePicker = useRef();
    const [ready, setReady] = useState(false);
 
    function Values(props) {
@@ -288,7 +287,7 @@ export default function PowerSettings() {
    async function handleFileChange(ev) {
       data.current = parsePlan(await ev.target.files[0].text());
       setReady((prevReady) => prevReady + 1);
-      filePicker.current.value = "";
+      ev.target.value = "";
    }
 
    return (
@@ -299,7 +298,6 @@ export default function PowerSettings() {
             style={{ position: "fixed", top: "100px", left: 0 }}
          >
             <input
-               ref={filePicker}
                type="file"
                accept=".txt"
                hidden

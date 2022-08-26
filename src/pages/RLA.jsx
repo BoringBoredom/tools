@@ -143,7 +143,6 @@ function processData(file, fileName, fileIndex) {
 export default function RLA() {
    const benches = useRef([]);
    const fileIndex = useRef(-1);
-   const filePicker = useRef();
 
    const [dataSets, setDataSets] = useState();
 
@@ -174,7 +173,7 @@ export default function RLA() {
          })
       );
 
-      filePicker.current.value = "";
+      ev.target.value = "";
    }
 
    return (
@@ -185,7 +184,6 @@ export default function RLA() {
             style={{ position: "fixed", top: "100px", left: 0 }}
          >
             <input
-               ref={filePicker}
                type="file"
                accept=".csv"
                multiple
