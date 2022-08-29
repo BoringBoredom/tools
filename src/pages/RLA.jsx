@@ -1,7 +1,7 @@
 import IconButton from "@mui/material/IconButton";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Line } from "react-chartjs-2";
 //import 'chart.js/auto';
@@ -98,7 +98,7 @@ const options = {
    }
 };
 
-function processData(file, fileName, fileIndex) {
+function processData(file, fileName) {
    const latencies = [];
    let total = 0;
 
@@ -116,7 +116,6 @@ function processData(file, fileName, fileIndex) {
    const avg = total / samples;
 
    const bench = {
-      file_index: fileIndex,
       file_name: fileName,
       samples: samples,
       STDEV: Math.sqrt(
@@ -141,37 +140,25 @@ function processData(file, fileName, fileIndex) {
 }
 
 export default function RLA() {
-   const benches = useRef([]);
-   const fileIndex = useRef(-1);
-
-   const [dataSets, setDataSets] = useState();
+   const [benches, setBenches] = useState([]);
 
    async function handleFileChange(ev) {
+      const newBenches = [];
+
       for (const file of ev.target.files) {
-         if (fileIndex.current >= 13) {
+         if (benches.length >= 13) {
             break;
          }
 
-         benches.current.push(
-            processData(
-               await file.text(),
-               file.name.slice(0, -4),
-               ++fileIndex.current
-            )
+         newBenches.push(
+            processData(await file.text(), file.name.slice(0, -4))
          );
       }
 
-      setDataSets(
-         benches.current.map((bench) => {
-            return {
-               id: bench.file_index,
-               label: bench.file_name + ` | ${bench.samples} samples`,
-               data: values.map((value) => bench[value]),
-               backgroundColor: colorList[bench.file_index],
-               borderColor: colorList[bench.file_index]
-            };
-         })
-      );
+      setBenches((previousBenches) => [
+         ...previousBenches,
+         ...newBenches
+      ]);
 
       ev.target.value = "";
    }
@@ -193,11 +180,23 @@ export default function RLA() {
             <FileUploadIcon fontSize="large" />
          </IconButton>
          <div>
-            {benches.current.length > 0 && (
+            {benches.length > 0 && (
                <Line
                   datasetIdKey="id"
                   options={options}
-                  data={{ labels: values, datasets: dataSets }}
+                  data={{
+                     labels: values,
+                     datasets: benches.map((bench, index) => {
+                        return {
+                           id: index,
+                           label:
+                              bench.file_name + ` | ${bench.samples} samples`,
+                           data: values.map((value) => bench[value]),
+                           backgroundColor: colorList[index],
+                           borderColor: colorList[index]
+                        };
+                     })
+                  }}
                />
             )}
          </div>
