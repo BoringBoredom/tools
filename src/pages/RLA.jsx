@@ -28,7 +28,8 @@ ChartJS.register(
 defaults.animation = false;
 defaults.events = [];
 defaults.font.size = 20;
-defaults.borderColor = "rgb(102,102,102)";
+defaults.borderColor = "rgb(70,70,70)";
+defaults.color = "rgb(255,255,255)";
 
 const values = [
    "STDEV",
@@ -155,10 +156,7 @@ export default function RLA() {
          );
       }
 
-      setBenches((previousBenches) => [
-         ...previousBenches,
-         ...newBenches
-      ]);
+      setBenches((previousBenches) => [...previousBenches, ...newBenches]);
 
       ev.target.value = "";
    }
@@ -179,8 +177,9 @@ export default function RLA() {
             />
             <FileUploadIcon fontSize="large" />
          </IconButton>
-         <div>
-            {benches.length > 0 && (
+
+         {benches.length > 0 && (
+            <div>
                <Line
                   datasetIdKey="id"
                   options={options}
@@ -198,8 +197,8 @@ export default function RLA() {
                      })
                   }}
                />
-            )}
-         </div>
+            </div>
+         )}
       </>
    );
 }

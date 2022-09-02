@@ -151,7 +151,7 @@ export default function WinSens() {
                                     {index + 1}
                                  </TableCell>
                                  <TableCell align="right">
-                                    {row[2] === undefined ? "-" : row[2]}
+                                    {row[2] ?? "-"}
                                  </TableCell>
                                  <TableCell align="right">{row[1]}</TableCell>
                               </TableRow>

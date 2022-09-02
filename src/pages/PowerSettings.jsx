@@ -309,7 +309,6 @@ export default function PowerSettings() {
             <>
                <IconButton
                   color="primary"
-                  component="label"
                   style={{ position: "fixed", top: "150px", left: 0 }}
                   onClick={() => saveFile(data.current)}
                >
