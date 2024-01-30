@@ -13,6 +13,7 @@ export default function RootLayout({
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
         <MantineProvider defaultColorScheme="dark">
           <Navigation>{children}</Navigation>
         </MantineProvider>
