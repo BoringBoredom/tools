@@ -1,0 +1,11 @@
+.buttons {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
+}
+.container {
+  position: relative;
+  height: 90vh;
+  width: 100vw;
+}

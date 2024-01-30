@@ -1,0 +1,28 @@
+.buttons {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
+  z-index: 3;
+}
+.bigFont {
+  font-size: 2rem;
+}
+.cursor:hover {
+  cursor: pointer;
+}
+.centerText {
+  text-align: center;
+}
+.transparencyFix {
+  z-index: 2;
+}
+.transparencyFix > tr {
+  border-bottom: 0;
+}
+.flexGrow {
+  flex-grow: 1;
+}
+.fontWeight {
+  font-weight: 900;
+}

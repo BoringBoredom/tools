@@ -1,0 +1,9 @@
+.centerText {
+  text-align: center;
+}
+.width {
+  width: 30rem;
+}
+.background {
+  background-color: var(--mantine-color-dark-5);
+}
