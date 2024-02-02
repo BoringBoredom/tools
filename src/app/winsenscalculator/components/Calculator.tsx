@@ -37,12 +37,12 @@ function DisplayDPI({
   const dpi = efDpi / multiplier;
 
   if (Number.isInteger(dpi)) {
-    return dpi;
+    return <Table.Td>{dpi}</Table.Td>;
   }
 
   return (
     <Tooltip label="rounded to the nearest integer">
-      <div>{`*${Math.round(dpi)}`}</div>
+      <Table.Td>{`*${Math.round(dpi)}`}</Table.Td>
     </Tooltip>
   );
 }
@@ -53,32 +53,34 @@ export default function Calculator() {
   return (
     <Stack>
       <Tooltip label="DPI you'd normally use @ stock setting (New Panel: 10/20 or Legacy Panel: 6/11)">
-        <NumberInput
-          label="*eDPI (DPI @ stock)"
-          value={efDPI}
-          onChange={(value) => {
-            if (typeof value === "number") {
-              setEfDPI(value);
-            }
-          }}
-          min={1}
-          max={10000000}
-          clampBehavior="strict"
-          allowNegative={false}
-          allowDecimal={false}
-          stepHoldDelay={250}
-          stepHoldInterval={1}
-        />
+        <div>
+          <NumberInput
+            label="*eDPI (DPI @ stock)"
+            value={efDPI}
+            onChange={(value) => {
+              if (typeof value === "number") {
+                setEfDPI(value);
+              }
+            }}
+            min={1}
+            max={10000000}
+            clampBehavior="strict"
+            allowNegative={false}
+            allowDecimal={false}
+            stepHoldDelay={250}
+            stepHoldInterval={1}
+          />
+        </div>
       </Tooltip>
       <Table striped withColumnBorders>
         <Table.Thead>
           <Table.Tr>
             <Table.Th className={s.alignRight}>DPI</Table.Th>
-            <Table.Th className={s.alignRight}>
-              <Tooltip label="HKEY_CURRENT_USER\Control Panel\Mouse -> MouseSensitivity">
-                <div>*Registry / New Panel</div>
-              </Tooltip>
-            </Table.Th>
+            <Tooltip label="HKEY_CURRENT_USER\Control Panel\Mouse -> MouseSensitivity">
+              <Table.Th className={s.alignRight}>
+                *Registry / New Panel
+              </Table.Th>
+            </Tooltip>
             <Table.Th className={s.alignRight}>Legacy Panel</Table.Th>
             <Table.Th className={s.alignRight}>Multiplier</Table.Th>
           </Table.Tr>
@@ -87,9 +89,7 @@ export default function Calculator() {
           {sensitivities.map((row, index) => {
             return (
               <Table.Tr key={row[1]} className={s.alignRight}>
-                <Table.Td>
-                  {<DisplayDPI efDpi={efDPI} multiplier={row[0] as number} />}
-                </Table.Td>
+                <DisplayDPI efDpi={efDPI} multiplier={row[0] as number} />
                 <Table.Td>{index + 1}</Table.Td>
                 <Table.Td>{row[2] ?? "-"}</Table.Td>
                 <Table.Td>{row[1]}</Table.Td>
