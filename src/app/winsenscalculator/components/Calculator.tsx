@@ -5,26 +5,26 @@ import { Stack, NumberInput, Tooltip, Table } from "@mantine/core";
 import React from "react";
 
 const sensitivities = [
-  [1 / 32, "1/32", "1/11"],
-  [1 / 16, "1/16", "2/11"],
+  [1 / 32, "1/32", "1"],
+  [1 / 16, "1/16", "2"],
   [1 / 8, "1/8"],
-  [2 / 8, "2/8", "3/11"],
+  [2 / 8, "2/8", "3"],
   [3 / 8, "3/8"],
-  [4 / 8, "4/8", "4/11"],
+  [4 / 8, "4/8", "4"],
   [5 / 8, "5/8"],
-  [6 / 8, "6/8", "5/11"],
+  [6 / 8, "6/8", "5"],
   [7 / 8, "7/8"],
-  [1, "1", "6/11"],
+  [1, "1", "6"],
   [1.25, "1.25"],
-  [1.5, "1.5", "7/11"],
+  [1.5, "1.5", "7"],
   [1.75, "1.75"],
-  [2, "2", "8/11"],
+  [2, "2", "8"],
   [2.25, "2.25"],
-  [2.5, "2.5", "9/11"],
+  [2.5, "2.5", "9"],
   [2.75, "2.75"],
-  [3, "3", "10/11"],
+  [3, "3", "10"],
   [3.25, "3.25"],
-  [3.5, "3.5", "11/11"],
+  [3.5, "3.5", "11"],
 ];
 
 function DisplayDPI({
@@ -91,7 +91,7 @@ export default function Calculator() {
               <Table.Tr key={row[1]} className={s.alignRight}>
                 <DisplayDPI efDpi={efDPI} multiplier={row[0] as number} />
                 <Table.Td>{index + 1}</Table.Td>
-                <Table.Td>{row[2] ?? "-"}</Table.Td>
+                <Table.Td>{row[2]}</Table.Td>
                 <Table.Td>{row[1]}</Table.Td>
               </Table.Tr>
             );

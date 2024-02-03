@@ -349,8 +349,6 @@ function PossibleValues({ setting }: { setting: Setting }) {
       </>
     );
   }
-
-  return "";
 }
 
 export default function Editor() {
@@ -435,7 +433,9 @@ export default function Editor() {
                   </Popover.Target>
                   <Popover.Dropdown>
                     <Text>{`GUID: ${setting.subgroup.guid}`}</Text>
-                    <Text>{`ALIAS: ${setting.subgroup.alias ?? ""}`}</Text>
+                    {setting.subgroup.alias && (
+                      <Text>{`ALIAS: ${setting.subgroup.alias}`}</Text>
+                    )}
                   </Popover.Dropdown>
                 </Popover>
                 <Popover
@@ -450,7 +450,7 @@ export default function Editor() {
                   </Popover.Target>
                   <Popover.Dropdown>
                     <Text>{`GUID: ${setting.guid}`}</Text>
-                    <Text>{`ALIAS: ${setting.alias ?? "-"}`}</Text>
+                    {setting.alias && <Text>{`ALIAS: ${setting.alias}`}</Text>}
                   </Popover.Dropdown>
                 </Popover>
                 <Table.Td>
