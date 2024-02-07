@@ -52,7 +52,9 @@ export default function Calculator() {
 
   return (
     <Stack>
-      <Tooltip label="DPI you'd normally use @ stock setting (New Panel: 10/20 or Legacy Panel: 6/11)">
+      <Tooltip
+        label={`DPI you'd normally use @ stock setting (New Panel: 10/20 or Legacy Panel: 6/11) with "Enhance pointer precision" disabled`}
+      >
         <div>
           <NumberInput
             label="*eDPI (DPI @ stock)"
