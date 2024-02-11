@@ -150,7 +150,8 @@ function exportChart(download: boolean) {
     scrollY: 0,
     ignoreElements: (element) =>
       element.tagName === "BUTTON" ||
-      element.className.includes("Grapher_buttons"),
+      element.className.includes("Grapher_buttons") ||
+      element.tagName === "NOSCRIPT",
     height: document.getElementById("chart-container")?.scrollHeight,
   }).then((canvas) => {
     canvas.toBlob((blob) => {
