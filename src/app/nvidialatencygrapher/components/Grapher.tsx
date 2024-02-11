@@ -150,7 +150,7 @@ function exportChart(download: boolean) {
     scrollY: 0,
     ignoreElements: (element) =>
       element.tagName === "BUTTON" ||
-      element.className.includes("Grapher_buttons") ||
+      element.id === "button-container" ||
       element.tagName === "NOSCRIPT",
     height: document.getElementById("chart-container")?.scrollHeight,
   }).then((canvas) => {
@@ -176,7 +176,7 @@ export default function Grapher() {
 
   return (
     <>
-      <Group className={s.buttons}>
+      <Group className={s.buttons} id="button-container">
         {benches.length > 0 && (
           <>
             <ActionIcon
