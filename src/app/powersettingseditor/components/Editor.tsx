@@ -368,7 +368,7 @@ export default function Editor() {
               downloadPlan();
             }}
           >
-            <IconDownload size="2.5rem" />
+            <IconDownload size="xl" />
           </ActionIcon>
         )}
         <FileButton
@@ -388,7 +388,7 @@ export default function Editor() {
               aria-label="Upload powersettings.txt"
               {...props}
             >
-              <IconUpload size="2.5rem" />
+              <IconUpload size="xl" />
             </ActionIcon>
           )}
         </FileButton>

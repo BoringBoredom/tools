@@ -70,8 +70,8 @@ const colorList = [
 ];
 
 function processData(file: string, fileName: string) {
-  const lines = file.split("\n").map((line) => line.trim());
-  const splitFirstRow = lines[0].toLowerCase().split(",");
+  const lines = file.split("\n");
+  const splitFirstRow = lines[0].trim().toLowerCase().split(",");
 
   let latencyColumn = 1;
   if (splitFirstRow.includes("mspclatency")) {
@@ -84,7 +84,7 @@ function processData(file: string, fileName: string) {
   let total = 0;
 
   for (const line of lines.slice(1)) {
-    const latency = parseFloat(line.split(",")[latencyColumn]);
+    const latency = parseFloat(line.trim().split(",")[latencyColumn]);
 
     if (!Number.isNaN(latency)) {
       latencies.push(latency);
@@ -179,6 +179,7 @@ export default function Grapher() {
         {benches.length > 0 && (
           <>
             <ActionIcon
+              size="lg"
               variant="subtle"
               color="gray"
               aria-label="Download chart as PNG"
@@ -186,9 +187,10 @@ export default function Grapher() {
                 exportChart(true);
               }}
             >
-              <IconDownload size="2rem" />
+              <IconDownload size="lg" />
             </ActionIcon>
             <ActionIcon
+              size="lg"
               variant="subtle"
               color="gray"
               aria-label="Copy chart to clipboard"
@@ -196,7 +198,7 @@ export default function Grapher() {
                 exportChart(false);
               }}
             >
-              <IconCopy size="2rem" />
+              <IconCopy size="lg" />
             </ActionIcon>
           </>
         )}
