@@ -180,7 +180,7 @@ export default function Grapher() {
         {benches.length > 0 && (
           <>
             <ActionIcon
-              size="lg"
+              size="2rem"
               variant="subtle"
               color="gray"
               aria-label="Download chart as PNG"
@@ -188,10 +188,10 @@ export default function Grapher() {
                 exportChart(true);
               }}
             >
-              <IconDownload size="lg" />
+              <IconDownload size="2rem" />
             </ActionIcon>
             <ActionIcon
-              size="lg"
+              size="2rem"
               variant="subtle"
               color="gray"
               aria-label="Copy chart to clipboard"
@@ -199,7 +199,7 @@ export default function Grapher() {
                 exportChart(false);
               }}
             >
-              <IconCopy size="lg" />
+              <IconCopy size="2rem" />
             </ActionIcon>
           </>
         )}

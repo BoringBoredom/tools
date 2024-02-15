@@ -360,7 +360,7 @@ export default function Editor() {
       <Group className={s.buttons}>
         {ready && (
           <ActionIcon
-            size="xl"
+            size="3rem"
             variant="subtle"
             color="gray"
             aria-label="Download Power Plan"
@@ -368,7 +368,7 @@ export default function Editor() {
               downloadPlan();
             }}
           >
-            <IconDownload size="xl" />
+            <IconDownload size="3rem" />
           </ActionIcon>
         )}
         <FileButton
@@ -382,13 +382,13 @@ export default function Editor() {
         >
           {(props) => (
             <ActionIcon
-              size="xl"
+              size="3rem"
               variant="subtle"
               color="gray"
               aria-label="Upload powersettings.txt"
               {...props}
             >
-              <IconUpload size="xl" />
+              <IconUpload size="3rem" />
             </ActionIcon>
           )}
         </FileButton>
