@@ -1,7 +1,7 @@
 "use client";
 
 import s from "./Grapher.module.css";
-import { ActionIcon, Button, FileButton, Group } from "@mantine/core";
+import { ActionIcon, FileButton, Group, Tooltip } from "@mantine/core";
 import { IconUpload, IconCopy, IconDownload } from "@tabler/icons-react";
 import React from "react";
 import { saveAs } from "file-saver";
@@ -16,7 +16,7 @@ import {
   PointElement,
   LineElement,
   Legend,
-  Tooltip,
+  Tooltip as ChartTooltip,
 } from "chart.js";
 ChartJS.register(
   CategoryScale,
@@ -24,14 +24,14 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
-  Tooltip
+  ChartTooltip
 );
 
 defaults.animation = false;
-defaults.events = [];
 defaults.font.size = 20;
 defaults.borderColor = "rgb(70,70,70)";
 defaults.color = "rgb(255,255,255)";
+defaults.normalized = true;
 
 interface Bench {
   fileName: string;
@@ -55,13 +55,13 @@ const percentileList = [
 const colorList = [
   "#800000",
   "#008000",
-  "#000080",
+  "#00bfff",
   "#ff8c00",
+  "#ff00ff",
   "#deb887",
   "#00ff00",
-  "#00bfff",
   "#0000ff",
-  "#ff00ff",
+  "#000080",
   "#2f4f4f",
   "#ffff54",
   "#dda0dd",
@@ -151,7 +151,8 @@ function exportChart(download: boolean) {
     ignoreElements: (element) =>
       element.tagName === "BUTTON" ||
       element.id === "button-container" ||
-      element.tagName === "NOSCRIPT",
+      element.tagName === "NOSCRIPT" ||
+      !!element.getAttribute("data-portal"),
     height: document.getElementById("chart-container")?.scrollHeight,
   }).then((canvas) => {
     canvas.toBlob((blob) => {
@@ -179,28 +180,30 @@ export default function Grapher() {
       <Group className={s.buttons} id="button-container">
         {benches.length > 0 && (
           <>
-            <ActionIcon
-              size="2rem"
-              variant="subtle"
-              color="gray"
-              aria-label="Download chart as PNG"
-              onClick={() => {
-                exportChart(true);
-              }}
-            >
-              <IconDownload size="2rem" />
-            </ActionIcon>
-            <ActionIcon
-              size="2rem"
-              variant="subtle"
-              color="gray"
-              aria-label="Copy chart to clipboard"
-              onClick={() => {
-                exportChart(false);
-              }}
-            >
-              <IconCopy size="2rem" />
-            </ActionIcon>
+            <Tooltip label="Export as PNG">
+              <ActionIcon
+                size="2rem"
+                variant="subtle"
+                color="gray"
+                onClick={() => {
+                  exportChart(true);
+                }}
+              >
+                <IconDownload size="2rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Export to clipboard">
+              <ActionIcon
+                size="2rem"
+                variant="subtle"
+                color="gray"
+                onClick={() => {
+                  exportChart(false);
+                }}
+              >
+                <IconCopy size="2rem" />
+              </ActionIcon>
+            </Tooltip>
           </>
         )}
         <FileButton
@@ -212,12 +215,11 @@ export default function Grapher() {
           }}
         >
           {(props) => (
-            <Button variant="outline" color="gray" {...props}>
-              <Group gap="xs">
-                <IconUpload />
-                <div>max. 14 files</div>
-              </Group>
-            </Button>
+            <Tooltip label="Upload files (max. 14)">
+              <ActionIcon size="2rem" variant="subtle" color="gray" {...props}>
+                <IconUpload size="2rem" />
+              </ActionIcon>
+            </Tooltip>
           )}
         </FileButton>
       </Group>
@@ -255,7 +257,6 @@ export default function Grapher() {
             }}
             options={{
               parsing: false,
-              normalized: true,
               maintainAspectRatio: false,
               events: ["click", "mousemove"],
               scales: {
