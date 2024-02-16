@@ -73,7 +73,7 @@ function processData(file: string, fileName: string) {
   const lines = file.split("\n");
   const splitFirstRow = lines[0].trim().toLowerCase().split(",");
 
-  let latencyColumn = 1;
+  let latencyColumn = 0;
   if (splitFirstRow.includes("mspclatency")) {
     latencyColumn = splitFirstRow.indexOf("mspclatency");
   } else if (splitFirstRow.includes("pc + displaylatency(msec)")) {
