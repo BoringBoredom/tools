@@ -178,6 +178,22 @@ export default function Grapher() {
   return (
     <>
       <Group className={s.buttons} id="button-container">
+        <FileButton
+          resetRef={resetRef}
+          multiple
+          accept=".csv"
+          onChange={(files) => {
+            void handleUpload(files, benches, setBenches, resetRef);
+          }}
+        >
+          {(props) => (
+            <Tooltip label="Upload files (max. 14)">
+              <ActionIcon size="2rem" variant="subtle" color="gray" {...props}>
+                <IconUpload size="2rem" />
+              </ActionIcon>
+            </Tooltip>
+          )}
+        </FileButton>
         {benches.length > 0 && (
           <>
             <Tooltip label="Export as PNG">
@@ -206,22 +222,6 @@ export default function Grapher() {
             </Tooltip>
           </>
         )}
-        <FileButton
-          resetRef={resetRef}
-          multiple
-          accept=".csv"
-          onChange={(files) => {
-            void handleUpload(files, benches, setBenches, resetRef);
-          }}
-        >
-          {(props) => (
-            <Tooltip label="Upload files (max. 14)">
-              <ActionIcon size="2rem" variant="subtle" color="gray" {...props}>
-                <IconUpload size="2rem" />
-              </ActionIcon>
-            </Tooltip>
-          )}
-        </FileButton>
       </Group>
 
       {benches.length > 0 && (
