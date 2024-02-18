@@ -178,6 +178,34 @@ export default function Grapher() {
   return (
     <>
       <Group className={s.buttons} id="button-container">
+        {benches.length > 0 && (
+          <>
+            <Tooltip label="Export to clipboard">
+              <ActionIcon
+                size="2rem"
+                variant="subtle"
+                color="gray"
+                onClick={() => {
+                  exportChart(false);
+                }}
+              >
+                <IconCopy size="2rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Export as PNG">
+              <ActionIcon
+                size="2rem"
+                variant="subtle"
+                color="gray"
+                onClick={() => {
+                  exportChart(true);
+                }}
+              >
+                <IconDownload size="2rem" />
+              </ActionIcon>
+            </Tooltip>
+          </>
+        )}
         <FileButton
           resetRef={resetRef}
           multiple
@@ -194,34 +222,6 @@ export default function Grapher() {
             </Tooltip>
           )}
         </FileButton>
-        {benches.length > 0 && (
-          <>
-            <Tooltip label="Export as PNG">
-              <ActionIcon
-                size="2rem"
-                variant="subtle"
-                color="gray"
-                onClick={() => {
-                  exportChart(true);
-                }}
-              >
-                <IconDownload size="2rem" />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip label="Export to clipboard">
-              <ActionIcon
-                size="2rem"
-                variant="subtle"
-                color="gray"
-                onClick={() => {
-                  exportChart(false);
-                }}
-              >
-                <IconCopy size="2rem" />
-              </ActionIcon>
-            </Tooltip>
-          </>
-        )}
       </Group>
 
       {benches.length > 0 && (
