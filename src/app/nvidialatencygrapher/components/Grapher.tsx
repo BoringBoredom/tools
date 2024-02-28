@@ -35,6 +35,7 @@ defaults.normalized = true;
 
 interface Bench {
   fileName: string;
+  uploaded: string;
   samples: number;
   metrics: {
     stdev: number;
@@ -104,6 +105,7 @@ function processData(file: string, fileName: string) {
 
   const bench: Bench = {
     fileName,
+    uploaded: Date.now().toString(),
     samples,
     metrics: {
       stdev: Math.sqrt(
@@ -227,6 +229,7 @@ export default function Grapher() {
       {benches.length > 0 && (
         <div id="chart-container" className={s.container}>
           <Line
+            datasetIdKey="datasetIdKey"
             data={{
               labels: [
                 "STDEV",
@@ -235,25 +238,24 @@ export default function Grapher() {
                 ...percentileList.map((percentile) => percentile.toString()),
                 "Max",
               ],
-              datasets: benches.map((bench, index) => {
-                return {
-                  label: `${bench.fileName} | ${bench.samples} samples`,
-                  backgroundColor: colorList[index],
-                  borderColor: colorList[index],
-                  data: [
-                    { x: "STDEV", y: bench.metrics.stdev },
-                    { x: "Min", y: bench.metrics.min },
-                    { x: "Avg", y: bench.metrics.avg },
-                    ...percentileList.map((percentile) => {
-                      return {
-                        x: percentile.toString(),
-                        y: bench.metrics.percentiles[percentile],
-                      };
-                    }),
-                    { x: "Max", y: bench.metrics.max },
-                  ],
-                };
-              }),
+              datasets: benches.map((bench, index) => ({
+                datasetIdKey: bench.fileName + bench.uploaded,
+                label: `${bench.fileName} | ${bench.samples} samples`,
+                backgroundColor: colorList[index],
+                borderColor: colorList[index],
+                data: [
+                  { x: "STDEV", y: bench.metrics.stdev },
+                  { x: "Min", y: bench.metrics.min },
+                  { x: "Avg", y: bench.metrics.avg },
+                  ...percentileList.map((percentile) => {
+                    return {
+                      x: percentile.toString(),
+                      y: bench.metrics.percentiles[percentile],
+                    };
+                  }),
+                  { x: "Max", y: bench.metrics.max },
+                ],
+              })),
             }}
             options={{
               parsing: false,
