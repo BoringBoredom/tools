@@ -42,7 +42,7 @@ function DisplayDPI({
 
   return (
     <Tooltip label="rounded to the nearest integer">
-      <Table.Td>{`*${Math.round(dpi)}`}</Table.Td>
+      <Table.Td>{`*${Math.round(dpi).toString()}`}</Table.Td>
     </Tooltip>
   );
 }

@@ -240,7 +240,9 @@ export default function Grapher() {
               ],
               datasets: benches.map((bench, index) => ({
                 datasetIdKey: bench.fileName + bench.uploaded,
-                label: `${bench.fileName} | ${bench.samples} samples`,
+                label: `${
+                  bench.fileName
+                } | ${bench.samples.toString()} samples`,
                 backgroundColor: colorList[index],
                 borderColor: colorList[index],
                 data: [

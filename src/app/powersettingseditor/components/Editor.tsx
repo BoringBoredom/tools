@@ -160,8 +160,12 @@ function downloadPlan() {
 
     batch +=
       `@echo ${setting.subgroup.name}: ${setting.name}\n` +
-      `powercfg /setacvalueindex ${plan.guid} ${subgroupId} ${settingId} ${setting.ac}\n` +
-      `powercfg /setdcvalueindex ${plan.guid} ${subgroupId} ${settingId} ${setting.dc}\n\n`;
+      `powercfg /setacvalueindex ${
+        plan.guid
+      } ${subgroupId} ${settingId} ${setting.ac.toString()}\n` +
+      `powercfg /setdcvalueindex ${
+        plan.guid
+      } ${subgroupId} ${settingId} ${setting.dc.toString()}\n\n`;
   }
 
   saveAs(new Blob([batch.trimEnd()]), `${plan.name}.bat`);
@@ -197,7 +201,7 @@ function ValueWrapper({
           void navigator.clipboard.writeText(
             `powercfg /set${type}valueindex ${plan.guid} ${
               setting.subgroup.alias ?? setting.subgroup.guid
-            } ${setting.alias ?? setting.guid} ${setting[type]}`
+            } ${setting.alias ?? setting.guid} ${setting[type].toString()}`
           );
         }}
       >
