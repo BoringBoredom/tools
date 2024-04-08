@@ -79,6 +79,8 @@ function processData(file: string, fileName: string) {
     latencyColumn = splitFirstRow.indexOf("mspclatency");
   } else if (splitFirstRow.includes("pc + displaylatency(msec)")) {
     latencyColumn = splitFirstRow.indexOf("pc + displaylatency(msec)");
+  } else if (splitFirstRow.includes("clicktophotonlatency")) {
+    latencyColumn = splitFirstRow.indexOf("clicktophotonlatency");
   }
 
   const latencies: number[] = [];
@@ -87,7 +89,7 @@ function processData(file: string, fileName: string) {
   for (const line of lines.slice(1)) {
     const latency = parseFloat(line.trim().split(",")[latencyColumn]);
 
-    if (!Number.isNaN(latency)) {
+    if (!Number.isNaN(latency) && latency !== 0) {
       latencies.push(latency);
       total += latency;
     }
