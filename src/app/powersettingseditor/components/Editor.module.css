@@ -15,9 +15,6 @@
   text-align: center;
 }
 .transparencyFix {
-  z-index: 2;
-}
-.transparencyFix > tr {
   border-bottom: 0;
 }
 .flexGrow {

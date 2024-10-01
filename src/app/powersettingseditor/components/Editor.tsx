@@ -399,8 +399,8 @@ export default function Editor() {
       </Group>
       {ready ? (
         <Table withColumnBorders stickyHeader>
-          <Table.Thead className={s.transparencyFix}>
-            <Table.Tr>
+          <Table.Thead>
+            <Table.Tr className={s.transparencyFix}>
               <Table.Th colSpan={4} className={s.centerText}>
                 <Text className={`${s.bigFont} ${s.fontWeight}`}>
                   {plan.name}
