@@ -79,6 +79,8 @@ function processData(file: string, fileName: string) {
     latencyColumn = splitFirstRow.indexOf("mspclatency");
   } else if (splitFirstRow.includes("pc + displaylatency(msec)")) {
     latencyColumn = splitFirstRow.indexOf("pc + displaylatency(msec)");
+  } else if (splitFirstRow.includes("allinputtophotonlatency")) {
+    latencyColumn = splitFirstRow.indexOf("allinputtophotonlatency");
   } else if (splitFirstRow.includes("clicktophotonlatency")) {
     latencyColumn = splitFirstRow.indexOf("clicktophotonlatency");
   }
