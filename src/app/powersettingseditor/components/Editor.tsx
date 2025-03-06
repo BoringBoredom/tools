@@ -14,16 +14,17 @@ import {
   Table,
   NumberInput,
   NativeSelect,
+  Tabs,
 } from "@mantine/core";
 import { IconCopy, IconDownload, IconUpload } from "@tabler/icons-react";
 import React from "react";
 import { saveAs } from "file-saver";
 
-interface PowerPlan {
+type PowerSchemes = {
   guid: string;
   name: string;
   settings: Setting[];
-}
+}[];
 
 interface Subgroup {
   guid: string;
@@ -63,12 +64,12 @@ type SixStateState =
   | "unit"
   | undefined;
 
-let plan: PowerPlan = {} as PowerPlan;
+const powerSchemes: PowerSchemes = [];
 
 function parseData(text: string) {
   const lines = text.split("\n").map((line) => line.replace("\r", ""));
 
-  const plan: Partial<PowerPlan> = { settings: [] };
+  let currentPowerScheme: PowerSchemes[number] = {} as PowerSchemes[number];
 
   let sixSpacesState: SixStateState;
   let isAc = true;
@@ -87,8 +88,15 @@ function parseData(text: string) {
     const powerSettingIndexMatch = line.match(/^ {4}\S.*: (0x\S*)$/m);
 
     if (powerSchemeMatch) {
-      plan.guid = powerSchemeMatch[1];
-      plan.name = powerSchemeMatch[2].slice(1, -1);
+      if (currentPowerScheme.guid) {
+        powerSchemes.push(currentPowerScheme);
+      }
+
+      currentPowerScheme = {
+        guid: powerSchemeMatch[1],
+        name: powerSchemeMatch[2].slice(1, -1),
+        settings: [],
+      };
     } else if (subgroupMatch) {
       currentSubgroup = {
         guid: subgroupMatch[1],
@@ -139,7 +147,7 @@ function parseData(text: string) {
 
         setting.subgroup = currentSubgroup as Subgroup;
         setting.index = index++;
-        plan.settings!.push(setting as Setting);
+        currentPowerScheme.settings.push(setting as Setting);
         setting = {};
       }
 
@@ -148,27 +156,31 @@ function parseData(text: string) {
     }
   }
 
-  return plan as PowerPlan;
+  powerSchemes.push(currentPowerScheme);
 }
 
 function downloadPlan() {
   let batch = "";
 
-  for (const setting of plan.settings) {
-    const subgroupId = setting.subgroup.alias ?? setting.subgroup.guid;
-    const settingId = setting.alias ?? setting.guid;
+  for (const powerScheme of powerSchemes) {
+    batch += `@echo ${powerScheme.name} (${powerScheme.guid})\n\n`;
 
-    batch +=
-      `@echo ${setting.subgroup.name}: ${setting.name}\n` +
-      `powercfg /setacvalueindex ${
-        plan.guid
-      } ${subgroupId} ${settingId} ${setting.ac.toString()}\n` +
-      `powercfg /setdcvalueindex ${
-        plan.guid
-      } ${subgroupId} ${settingId} ${setting.dc.toString()}\n\n`;
+    for (const setting of powerScheme.settings) {
+      const subgroupId = setting.subgroup.alias ?? setting.subgroup.guid;
+      const settingId = setting.alias ?? setting.guid;
+
+      batch +=
+        `@echo ${setting.subgroup.name}: ${setting.name}\n` +
+        `powercfg /setacvalueindex ${
+          powerScheme.guid
+        } ${subgroupId} ${settingId} ${setting.ac.toString()}\n` +
+        `powercfg /setdcvalueindex ${
+          powerScheme.guid
+        } ${subgroupId} ${settingId} ${setting.dc.toString()}\n\n`;
+    }
   }
 
-  saveAs(new Blob([batch.trimEnd()]), `${plan.name}.bat`);
+  saveAs(new Blob([batch.trimEnd()]), "power_settings.bat");
 }
 
 async function handleUpload(
@@ -177,7 +189,7 @@ async function handleUpload(
   setReady: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   const text = await file.text();
-  plan = parseData(text);
+  parseData(text);
   setReady((previous) => !previous);
   resetRef.current?.();
 }
@@ -186,10 +198,12 @@ function ValueWrapper({
   setting,
   children,
   type,
+  powerSchemeGuid,
 }: {
   setting: Setting;
   children: React.ReactNode;
   type: "ac" | "dc";
+  powerSchemeGuid: string;
 }) {
   return (
     <Group justify="space-between" align="end" wrap="nowrap">
@@ -199,7 +213,7 @@ function ValueWrapper({
         color="gray"
         onClick={() => {
           void navigator.clipboard.writeText(
-            `powercfg /set${type}valueindex ${plan.guid} ${
+            `powercfg /set${type}valueindex ${powerSchemeGuid} ${
               setting.subgroup.alias ?? setting.subgroup.guid
             } ${setting.alias ?? setting.guid} ${setting[type].toString()}`
           );
@@ -211,11 +225,21 @@ function ValueWrapper({
   );
 }
 
-function Values({ setting }: { setting: Setting }) {
+function Values({
+  setting,
+  powerSchemeGuid,
+}: {
+  setting: Setting;
+  powerSchemeGuid: string;
+}) {
   if (setting.options) {
     return (
       <>
-        <ValueWrapper setting={setting} type="ac">
+        <ValueWrapper
+          setting={setting}
+          powerSchemeGuid={powerSchemeGuid}
+          type="ac"
+        >
           <NativeSelect
             className={s.flexGrow}
             label="AC"
@@ -227,11 +251,15 @@ function Values({ setting }: { setting: Setting }) {
               };
             })}
             onChange={(ev) => {
-              plan.settings[setting.index].ac = parseInt(ev.target.value, 10);
+              setting.ac = parseInt(ev.target.value, 10);
             }}
           />
         </ValueWrapper>
-        <ValueWrapper setting={setting} type="dc">
+        <ValueWrapper
+          setting={setting}
+          powerSchemeGuid={powerSchemeGuid}
+          type="dc"
+        >
           <NativeSelect
             className={s.flexGrow}
             label="DC"
@@ -243,7 +271,7 @@ function Values({ setting }: { setting: Setting }) {
               };
             })}
             onChange={(ev) => {
-              plan.settings[setting.index].dc = parseInt(ev.target.value, 10);
+              setting.dc = parseInt(ev.target.value, 10);
             }}
           />
         </ValueWrapper>
@@ -252,14 +280,18 @@ function Values({ setting }: { setting: Setting }) {
   } else if (setting.range) {
     return (
       <>
-        <ValueWrapper setting={setting} type="ac">
+        <ValueWrapper
+          setting={setting}
+          powerSchemeGuid={powerSchemeGuid}
+          type="ac"
+        >
           <NumberInput
             className={s.flexGrow}
             label="AC"
             defaultValue={setting.ac}
             onChange={(value) => {
               if (typeof value === "number") {
-                plan.settings[setting.index].ac = value;
+                setting.ac = value;
               }
             }}
             min={setting.range.min}
@@ -272,14 +304,18 @@ function Values({ setting }: { setting: Setting }) {
             stepHoldInterval={1}
           />
         </ValueWrapper>
-        <ValueWrapper setting={setting} type="dc">
+        <ValueWrapper
+          setting={setting}
+          powerSchemeGuid={powerSchemeGuid}
+          type="dc"
+        >
           <NumberInput
             className={s.flexGrow}
             label="DC"
             defaultValue={setting.dc}
             onChange={(value) => {
               if (typeof value === "number") {
-                plan.settings[setting.index].dc = value;
+                setting.dc = value;
               }
             }}
             min={setting.range.min}
@@ -298,14 +334,18 @@ function Values({ setting }: { setting: Setting }) {
 
   return (
     <>
-      <ValueWrapper setting={setting} type="ac">
+      <ValueWrapper
+        setting={setting}
+        powerSchemeGuid={powerSchemeGuid}
+        type="ac"
+      >
         <NumberInput
           className={s.flexGrow}
           label="AC"
           defaultValue={setting.ac}
           onChange={(value) => {
             if (typeof value === "number") {
-              plan.settings[setting.index].ac = value;
+              setting.ac = value;
             }
           }}
           min={0}
@@ -316,14 +356,18 @@ function Values({ setting }: { setting: Setting }) {
           stepHoldInterval={1}
         />
       </ValueWrapper>
-      <ValueWrapper setting={setting} type="dc">
+      <ValueWrapper
+        setting={setting}
+        powerSchemeGuid={powerSchemeGuid}
+        type="dc"
+      >
         <NumberInput
           className={s.flexGrow}
           label="DC"
           defaultValue={setting.dc}
           onChange={(value) => {
             if (typeof value === "number") {
-              plan.settings[setting.index].dc = value;
+              setting.dc = value;
             }
           }}
           min={0}
@@ -398,92 +442,118 @@ export default function Editor() {
         </FileButton>
       </Group>
       {ready ? (
-        <Table withColumnBorders stickyHeader>
-          <Table.Thead>
-            <Table.Tr className={s.transparencyFix}>
-              <Table.Th colSpan={4} className={s.centerText}>
-                <Text className={`${s.bigFont} ${s.fontWeight}`}>
-                  {plan.name}
-                </Text>
-              </Table.Th>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>
-                <Text className={s.fontWeight}>Subgroup</Text>
-              </Table.Th>
-              <Table.Th>
-                <Text className={s.fontWeight}>Setting</Text>
-              </Table.Th>
-              <Table.Th>
-                <Text className={s.fontWeight}>Value</Text>
-              </Table.Th>
-              <Table.Th>
-                <Text className={s.fontWeight}>Possible Values</Text>
-              </Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {plan.settings.map((setting) => (
-              <Table.Tr key={setting.index}>
-                <Popover
-                  withArrow
-                  arrowSize={12}
-                  transitionProps={{ duration: 0 }}
-                >
-                  <Popover.Target>
-                    <Table.Td className={s.cursor}>
-                      <Text>{setting.subgroup.name}</Text>
-                    </Table.Td>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Text>{`GUID: ${setting.subgroup.guid}`}</Text>
-                    {setting.subgroup.alias && (
-                      <Text>{`ALIAS: ${setting.subgroup.alias}`}</Text>
-                    )}
-                  </Popover.Dropdown>
-                </Popover>
-                <Popover
-                  withArrow
-                  arrowSize={12}
-                  transitionProps={{ duration: 0 }}
-                >
-                  <Popover.Target>
-                    <Table.Td className={s.cursor}>
-                      <Text>{setting.name}</Text>
-                    </Table.Td>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Text>{`GUID: ${setting.guid}`}</Text>
-                    {setting.alias && <Text>{`ALIAS: ${setting.alias}`}</Text>}
-                  </Popover.Dropdown>
-                </Popover>
-                <Table.Td>
-                  <Values setting={setting} />
-                </Table.Td>
-                <Table.Td>
-                  <PossibleValues setting={setting} />
-                </Table.Td>
-              </Table.Tr>
+        <Tabs variant="pills" defaultValue="0">
+          <Tabs.List className={s.stickyBottom}>
+            {powerSchemes.map((powerScheme, index) => (
+              <Tabs.Tab value={index.toString()} key={powerScheme.guid}>
+                {powerScheme.name}
+              </Tabs.Tab>
             ))}
-          </Table.Tbody>
-        </Table>
+          </Tabs.List>
+          <Table withColumnBorders stickyHeader>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>
+                  <Text className={s.fontWeight}>Subgroup</Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text className={s.fontWeight}>Setting</Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text className={s.fontWeight}>Value</Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text className={s.fontWeight}>Possible Values</Text>
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {powerSchemes[0].settings.map((setting, settingIndex) => (
+                <Table.Tr key={setting.index}>
+                  <Popover
+                    withArrow
+                    arrowSize={12}
+                    transitionProps={{ duration: 0 }}
+                  >
+                    <Popover.Target>
+                      <Table.Td className={s.cursor}>
+                        <Text>{setting.subgroup.name}</Text>
+                      </Table.Td>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <Text>{`GUID: ${setting.subgroup.guid}`}</Text>
+                      {setting.subgroup.alias && (
+                        <Text>{`ALIAS: ${setting.subgroup.alias}`}</Text>
+                      )}
+                    </Popover.Dropdown>
+                  </Popover>
+                  <Popover
+                    withArrow
+                    arrowSize={12}
+                    transitionProps={{ duration: 0 }}
+                  >
+                    <Popover.Target>
+                      <Table.Td className={s.cursor}>
+                        <Text>{setting.name}</Text>
+                      </Table.Td>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <Text>{`GUID: ${setting.guid}`}</Text>
+                      {setting.alias && (
+                        <Text>{`ALIAS: ${setting.alias}`}</Text>
+                      )}
+                    </Popover.Dropdown>
+                  </Popover>
+                  <Table.Td>
+                    {powerSchemes.map((powerScheme, powerSchemeIndex) => (
+                      <Tabs.Panel
+                        value={powerSchemeIndex.toString()}
+                        key={powerScheme.guid}
+                      >
+                        <Values
+                          setting={
+                            powerSchemes[powerSchemeIndex].settings[
+                              settingIndex
+                            ]
+                          }
+                          powerSchemeGuid={powerScheme.guid}
+                        />
+                      </Tabs.Panel>
+                    ))}
+                  </Table.Td>
+                  <Table.Td>
+                    <PossibleValues setting={setting} />
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Tabs>
       ) : (
         <Stack>
-          <Text className={s.bigFont}>Open the CLI as Admin.</Text>
+          <Text className={s.bigFont}>
+            Save and execute this as a .bat file:
+          </Text>
           <Tooltip label="Click to copy to clipboard">
             <Code
               className={`${s.bigFont} ${s.cursor}`}
               block
               onClick={() => {
                 void navigator.clipboard.writeText(
-                  "powercfg /QH > C:\\powersettings.txt"
+                  `if exist power_settings.txt del power_settings.txt\n` +
+                    `for /f "tokens=4" %%G in ('powercfg /list ^| findstr /C:"GUID:"') do (\n` +
+                    `    powercfg /qh %%G >> power_settings.txt\n` +
+                    `)`
                 );
               }}
             >
-              {"powercfg /QH > C:\\powersettings.txt"}
+              {`if exist power_settings.txt del power_settings.txt\n` +
+                `for /f "tokens=4" %%G in ('powercfg /list ^| findstr /C:"GUID:"') do (\n` +
+                `    powercfg /qh %%G >> power_settings.txt\n` +
+                `)`}
             </Code>
           </Tooltip>
-          <Text className={s.bigFont}>Upload powersettings.txt</Text>
+          <Text className={s.bigFont}>Upload power_settings.txt</Text>
         </Stack>
       )}
     </>

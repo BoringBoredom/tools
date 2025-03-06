@@ -6,20 +6,19 @@
   z-index: 3;
 }
 .bigFont {
-  font-size: 2rem;
+  font-size: 1.2rem;
 }
 .cursor:hover {
   cursor: pointer;
-}
-.centerText {
-  text-align: center;
-}
-.transparencyFix {
-  border-bottom: 0;
 }
 .flexGrow {
   flex-grow: 1;
 }
 .fontWeight {
   font-weight: 900;
+}
+.stickyBottom {
+  position: fixed;
+  bottom: 0;
+  background-color: var(--mantine-color-dark-8);
 }
