@@ -406,7 +406,7 @@ export default function Editor() {
   return (
     <>
       <Group className={s.buttons}>
-        {ready && (
+        {ready ? (
           <ActionIcon
             size="3rem"
             variant="subtle"
@@ -418,28 +418,29 @@ export default function Editor() {
           >
             <IconDownload size="3rem" />
           </ActionIcon>
+        ) : (
+          <FileButton
+            resetRef={resetRef}
+            accept=".txt"
+            onChange={(file) => {
+              if (file) {
+                void handleUpload(file, resetRef, setReady);
+              }
+            }}
+          >
+            {(props) => (
+              <ActionIcon
+                size="3rem"
+                variant="subtle"
+                color="gray"
+                aria-label="Upload powersettings.txt"
+                {...props}
+              >
+                <IconUpload size="3rem" />
+              </ActionIcon>
+            )}
+          </FileButton>
         )}
-        <FileButton
-          resetRef={resetRef}
-          accept=".txt"
-          onChange={(file) => {
-            if (file) {
-              void handleUpload(file, resetRef, setReady);
-            }
-          }}
-        >
-          {(props) => (
-            <ActionIcon
-              size="3rem"
-              variant="subtle"
-              color="gray"
-              aria-label="Upload powersettings.txt"
-              {...props}
-            >
-              <IconUpload size="3rem" />
-            </ActionIcon>
-          )}
-        </FileButton>
       </Group>
       {ready ? (
         <Tabs variant="pills" defaultValue="0">
